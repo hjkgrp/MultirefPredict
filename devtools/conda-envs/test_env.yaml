@@ -21,7 +21,7 @@ dependencies:
   - py-cpuinfo
   - psutil
   - qcelemental >=0.2.6
-  - qcengine
+  - qcengine=0.5.2
   - pydantic >=0.18.1
   - openbabel
 
