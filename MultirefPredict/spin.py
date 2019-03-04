@@ -61,7 +61,7 @@ class atomSpinMultDict:
         else:
             if anumber <= 20: # H to Ca
                 spinmult = self.mult_dict[nele]
-            elif anumber >20 and anumber <= 30: #Sc - Zn
+            elif anumber <= 30: #Sc - Zn
                 if charge == 1:#lose one 4s electron
                     # Assume that electrons are always removed from 4s
                     #TODO: check this against literature
@@ -77,7 +77,7 @@ class atomSpinMultDict:
                         spinmult = n_3d + 1
                     else:
                         spinmult = 10 - n_3d + 1
-            elif anumber >30 and anumber <=36: # Ga - Kr
+            elif anumber <=36: # Ga - Kr
                 nele_4p = nele-30
                 #no more than 4p^25s^2 ocupation
                 if charge >= nele_4p-8:
