@@ -35,8 +35,8 @@ install:
 
     # Create test environment for package
   - python devtools/scripts/create_conda_env.py -n=test -p=$PYTHON_VER devtools/conda-envs/test_env.yaml
-  - python devtools/scripts/conda_env.py -n=test -p=$PYTHON_VER devtools/conda-envs/psi.yaml
-  - python devtools/scripts/conda_env.py -n=test -p=$PYTHON_VER devtools/conda-envs/qcengine.yaml
+  - python devtools/scripts/create_conda_env.py -n=test -p=$PYTHON_VER devtools/conda-envs/psi.yaml
+  - python devtools/scripts/create_conda_env.py -n=test -p=$PYTHON_VER devtools/conda-envs/qcengine.yaml
     # Activate the test environment
   - source activate test
     # Build and install package
