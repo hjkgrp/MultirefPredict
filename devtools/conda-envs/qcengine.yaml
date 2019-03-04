@@ -5,3 +5,4 @@ dependencies:
   - numpy
   - pydantic >=0.18.0
   - qcelemental >=0.2.1
+  - qcengine
