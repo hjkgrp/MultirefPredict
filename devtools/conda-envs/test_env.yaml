@@ -2,6 +2,7 @@ name: test
 channels:
   - psi4
   - conda-forge
+  - openbabel
 dependencies:
     # Base depends
   - python
@@ -22,7 +23,7 @@ dependencies:
   - qcelemental >=0.2.6
   - qcengine
   - pydantic >=0.18.1
-
+  - openbabel
 
     # Pip-only installs
   - pip:
