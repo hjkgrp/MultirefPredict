@@ -1,9 +1,13 @@
 import qcelemental
+import sys
 import openbabel
 
 def qcelemental2xyz(molecule):
-    coords = molecule.pretty_print().split('\n')[4:-2]
-    xyz = str(len(coords)) + "\n\n"
+    mol_str = molecule.pretty_print().strip('\n').split('\n')
+    natom = len(molecule.symbols)
+    startline = -natom
+    coords = mol_str[startline:]
+    xyz = str(natom) + "\n\n"
     for line in coords:
         xyz += line + "\n"
     return xyz
@@ -23,4 +27,3 @@ def xyzfile2qcelemental(xyzfile, charge=0, spinmult=1):
         mol_str += xyz[i]
     molecule = qcelemental.models.Molecule.from_data(mol_str)
     return molecule
-
