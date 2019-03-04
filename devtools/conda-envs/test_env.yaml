@@ -20,7 +20,7 @@ dependencies:
   - py-cpuinfo
   - psutil
   - qcelemental >=0.2.6
-  - qcenegine
+  - qcengine
   - pydantic >=0.18.1
 
 
