@@ -1,0 +1,7 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - numpy
+  - pydantic >=0.18.0
+  - qcelemental >=0.2.1
