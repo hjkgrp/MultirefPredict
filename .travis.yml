@@ -34,7 +34,7 @@ install:
 
 
 script:
-  - pytest -v --cov=MultirefPredict MultirefPredict/tests/
+  - pytest -vv --cov=MultirefPredict MultirefPredict/tests/
 
 notifications:
     email: false
