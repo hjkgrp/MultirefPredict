@@ -5,15 +5,12 @@ Unit and regression test for the MultirefPredict package.
 # Import package, test suite, and other packages as needed
 import pytest
 import qcelemental
-from MultirefPredict.b1 import B1
+from MultirefPredict.ebased_diagnostic import B1
 from .compare import fuzzyEqual
 import sys
 import os
 import qcengine
 import psi4
-
-#def test_b1():
-#    assert "B1" in dir(MultirefPredict.b1)
 
 def test_b1_init(qcelemental_water, xyz_water):
     b1_calculator = B1(molecule = qcelemental_water)

@@ -4,7 +4,7 @@ Automated workflow to predict multireference character of molecules in quantum c
 
 Handles the primary functions
 """
-from MultirefPredict.b1 import B1
+from MultirefPredict.ebased_diagnostic import B1
 
 def diagnostic_factory(diagnostic_type, **kwargs):
     """

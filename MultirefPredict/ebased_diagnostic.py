@@ -1,9 +1,9 @@
 """
-b1.py
+energy_based_diag.py
 
-A class that calculate the B1 diagnostic of a given molecule 
-(QCElemental instance) with psi4
+Classes that calculate the energy based multireference diagnostics
 """
+from abc import ABC, abstractmethod
 import qcengine
 import qcelemental
 from MultirefPredict.spin import atomSpinMultDict
@@ -11,7 +11,7 @@ from MultirefPredict.cheminfo import qcelemental2OBMol
 from MultirefPredict.diagnostic import Diagnostic
 
 available_programs =  ["psi4"]
-class B1(Diagnostic):
+class EBasedDiagnostic(Diagnostic):
     def __init__(self, **kwargs):
 
         for key,value in kwargs.items():
@@ -82,11 +82,11 @@ class B1(Diagnostic):
         return True
 
     """
-    Compute the binding energy of the molecule with given funcitonal
+    Compute the binding energy of the molecule with given method
     """
-    def computeBE(self, dft_functional):
+    def computeBE(self, method):
         print("")
-        print("Calculate atomization energy with DFT functional: ",dft_functional)
+        print("Calculate atomization energy with method: ", method)
         if self.program != "psi4":
             raise ValueError("Support for packages other than psi4 is to be done\n")
 
@@ -96,7 +96,7 @@ class B1(Diagnostic):
                 "schema_version": 1,
                 "molecule": self.molecule,
                 "driver": "energy",
-                "model": {"method": dft_functional, "basis": "6-31g" 
+                "model": {"method": method, "basis": "6-31g" 
                          },
         }
 
@@ -116,7 +116,7 @@ class B1(Diagnostic):
                 "schema_version": 1,
                 "molecule": self.atomized[symbol]["molecule"],
                 "driver": "energy",
-                "model": {"method": dft_functional, "basis": "6-31g", 
+                "model": {"method": method, "basis": "6-31g", 
                          },
             }
             atom_result = qcengine.compute(atom_task, "psi4")
@@ -137,7 +137,18 @@ class B1(Diagnostic):
         return BE
 
     """
-    Compute the diagnostics
+    Compute the diagnostic
+    """
+    @abstractmethod
+    def computeDiagnostic(self):
+        pass
+
+class B1(EBasedDiagnostic):
+    def __init__(self, **kwargs):
+        EBasedDiagnostic.__init__(self, **kwargs)
+
+    """
+    Compute the B1 diagnostic
     """
     def computeDiagnostic(self):
         print("Compute B1 diagnostic of the given molecule:")
