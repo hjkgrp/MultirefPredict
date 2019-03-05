@@ -12,7 +12,7 @@ dependencies:
   - pytest
   - pytest-cov
 
-  - psi4=1.2
+  - psi4
   - dftd3
     # Core
   - numpy
@@ -21,7 +21,7 @@ dependencies:
   - py-cpuinfo
   - psutil
   - qcelemental >=0.2.6
-  - qcengine=0.5.2
+  - qcengine
   - pydantic >=0.18.1
   - openbabel
 

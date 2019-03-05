@@ -50,7 +50,6 @@ def test_b1_mol2atoms(b1_water):
 def test_qcengine():
     assert "qcengine" in sys.modules
 
-@pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", reason="Skipping this test on Travis CI.")
 def test_psi4():
     assert "psi4" in sys.modules
     psi4.set_memory('500 MB')
@@ -64,7 +63,6 @@ def test_psi4():
     res=psi4.energy('scf/cc-pvdz')
     assert res!=0
 
-@pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", reason="Skipping this test on Travis CI.")
 def test_energy_prep(b1_water):
     # Caculate energy for the whole molecule
     dft_functional = "blyp"
