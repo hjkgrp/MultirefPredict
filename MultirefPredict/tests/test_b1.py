@@ -8,6 +8,7 @@ import qcelemental
 from MultirefPredict.b1 import B1
 from .compare import fuzzyEqual
 import sys
+import os
 import qcengine
 import psi4
 
@@ -52,6 +53,7 @@ def test_b1_mol2atoms(b1_water):
 def test_qcengine():
     assert "qcengine" in sys.modules
 
+@pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", reason="Skipping this test on Travis CI.")
 def test_psi4():
     assert "psi4" in sys.modules
     psi4.set_memory('500 MB')
@@ -65,7 +67,7 @@ def test_psi4():
     res=psi4.energy('scf/cc-pvdz')
     assert res!=0
 
-@pytest.mark.skip("Skip for now to debug travis CI")
+@pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", reason="Skipping this test on Travis CI.")
 def test_energy_prep(b1_water):
     # Caculate energy for the whole molecule
     dft_functional = "blyp"
@@ -82,7 +84,7 @@ def test_energy_prep(b1_water):
     molecule_result = qcengine.compute(molecule_task, "psi4")
     assert True
 
-@pytest.mark.skip("Skip for now to debug travis CI enviroment")
+@pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", reason="Skipping this test on Travis CI.")
 def test_b1_computeBE(b1_water):
     EnergyThre = 1e-6
 
@@ -92,7 +94,7 @@ def test_b1_computeBE(b1_water):
     BE_b1lyp = b1_water.computeBE("b1lyp")
     assert fuzzyEqual(BE_b1lyp,0.3183329645632256,EnergyThre)
 
-@pytest.mark.skip("Skip for now to debug travis CI enviroment")
+@pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", reason="Skipping this test on Travis CI.")
 def test_b1_computeDiagnostic(b1_water):
     B1Thre = 1e-6
     B1 = b1_water.computeDiagnostic()

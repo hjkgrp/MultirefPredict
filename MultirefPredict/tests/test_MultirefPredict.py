@@ -6,14 +6,15 @@ Unit and regression test for the MultirefPredict package.
 import MultirefPredict
 import pytest
 import sys
+import os
 from .compare import fuzzyEqual
 
-@pytest.mark.skip(reason="skip for travis for now")
+@pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", reason="Skipping this test on Travis CI.")
 def test_MultirefPredict_imported():
     """Sample test, will always pass so long as import statement worked"""
     assert "MultirefPredict" in sys.modules
 
-@pytest.mark.skip(reason="skip for travis for now")
+@pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", reason="Skipping this test on Travis CI.")
 def test_diagnostic_factory(qcelemental_water):
     calculator = MultirefPredict.diagnostic_factory("B1", molecule=qcelemental_water)
     result = calculator.computeDiagnostic()
