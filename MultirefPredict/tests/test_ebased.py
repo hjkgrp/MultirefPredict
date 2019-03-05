@@ -5,7 +5,7 @@ Unit and regression test for the MultirefPredict package.
 # Import package, test suite, and other packages as needed
 import pytest
 import qcelemental
-from MultirefPredict.ebased_diagnostic import B1
+from MultirefPredict.ebased_diagnostic import B1,A25PBE
 from .compare import fuzzyEqual
 import sys
 import os
@@ -94,5 +94,18 @@ def test_b1_computeBE(b1_water):
 @pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", reason="Skipping this test on Travis CI.")
 def test_b1_computeDiagnostic(b1_water):
     B1Thre = 1e-6
-    B1 = b1_water.computeDiagnostic()
-    assert fuzzyEqual(B1,0.006334860365228678, B1Thre)
+    diag = b1_water.computeDiagnostic()
+    expected = 0.006334860365228678
+    assert fuzzyEqual(diag,0.006334860365228678, B1Thre)
+
+@pytest.fixture(scope="class")
+def a25pbe_water(qcelemental_water):
+    a25pbe = A25PBE(molecule=qcelemental_water)
+    return a25pbe
+
+@pytest.mark.skipif("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", reason="Skipping this test on Travis CI.")
+def test_a25tae_computeDiagnostic(a25pbe_water):
+    A25PBEThre = 1e-6
+    diag = a25pbe_water.computeDiagnostic()
+    expected = 0.1626572016077259
+    assert fuzzyEqual(diag, expected, A25PBEThre)

@@ -157,6 +157,24 @@ class B1(EBasedDiagnostic):
         BE_BLYP = self.computeBE("blyp")
         BE_B1LYP = self.computeBE("b1lyp")
         print("Number of bonds in the molecule: ", self.numBonds)
-        B1 = (BE_BLYP - BE_B1LYP) / float(self.numBonds)
-        print("\nB1 DIAGNOSTICS: {:.3f}".format(B1))
-        return B1
+        diag = (BE_BLYP - BE_B1LYP) / float(self.numBonds)
+        print("\nB1 DIAGNOSTICS: {:.3f}".format(diag))
+        return diag
+
+class A25PBE(EBasedDiagnostic):
+    def __init__(self, **kwargs):
+        EBasedDiagnostic.__init__(self, **kwargs)
+
+    """
+    Compute the A25PBE diagnostic
+    """
+    def computeDiagnostic(self):
+        print("Compute A25PBE diagnostic of the given molecule:")
+        self.molecule.pretty_print()
+        self.mol2atoms()
+        TAE_PBE = self.computeBE("pbe")
+        TAE_PBE0 = self.computeBE("pbe0")
+        print("Number of bonds in the molecule: ", self.numBonds)
+        diag = 4*(1-TAE_PBE0/TAE_PBE)
+        print("\nA25PBE DIAGNOSTICS: {:.3f}".format(diag))
+        return diag
