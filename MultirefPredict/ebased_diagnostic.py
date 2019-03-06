@@ -91,18 +91,17 @@ class EBasedDiagnostic(Diagnostic):
             raise ValueError("Support for packages other than psi4 is to be done\n")
 
         # Caculate energy for the whole molecule
-        molecule_task = {
-                "schema_name": "qcschema_input",
-                "schema_version": 1,
-                "molecule": self.molecule,
-                "driver": "energy",
-                "model": {"method": method, "basis": "6-31g" 
-                         },
-        }
+        molecule_task = qcelemental.models.ResultInput (
+                molecule = self.molecule,
+                driver = "energy",
+                model = {"method" : method, "basis" : "6-31g" },
+        )
 
         print("Evaluating the energy of the whole molecule...")
         molecule_result = qcengine.compute(molecule_task, "psi4")
-        molecule_energy = molecule_result["return_result"]
+        if not molecule_result.success:
+            raise RuntimeError("Quantum chemistry calculation failed.")
+        molecule_energy = molecule_result.return_result
         print("Final energy of the molecule (Hartree): {:.8f}".format(molecule_energy))
 
         print("Evaluating the energy of the atomization limit of the molecule...")
@@ -111,16 +110,15 @@ class EBasedDiagnostic(Diagnostic):
 
         # Calculate energy for each unique atom at the atomization limit
         for symbol in self.atomized:
-            atom_task = {
-                "schema_name": "qcschema_input",
-                "schema_version": 1,
-                "molecule": self.atomized[symbol]["molecule"],
-                "driver": "energy",
-                "model": {"method": method, "basis": "6-31g", 
-                         },
-            }
+            atom_task = qcelemental.models.ResultInput (
+                molecule = self.atomized[symbol]["molecule"],
+                driver = "energy",
+                model = {"method" :  method, "basis" :  "6-31g"},
+            )
             atom_result = qcengine.compute(atom_task, "psi4")
-            atom_energy = atom_result["return_result"]
+            if not atom_result.success:
+                raise RuntimeError("Quantum chemistry calculation failed.")
+            atom_energy = atom_result.return_result
             print("Final energy of atom ",symbol," (Hartree): {:.8f}".format(atom_energy))
             self.atomized[symbol]["energy"] = atom_energy
 

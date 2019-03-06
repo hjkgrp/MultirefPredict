@@ -20,12 +20,12 @@ dependencies:
   - pyyaml
   - py-cpuinfo
   - psutil
-  - qcelemental >=0.2.6
-  - qcengine
-  - pydantic >=0.18.1
+  - qcelemental >=0.3.0
+  - pydantic >=0.20.0
   - openbabel
 
     # Pip-only installs
   - pip:
     - codecov
     - git+https://github.com/leeping/geomeTRIC#egg=geometric
+    - git+https://github.com/MolSSI/QCEngine.git@master#egg=qcengine
