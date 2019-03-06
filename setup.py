@@ -2,8 +2,7 @@
 MultirefPredict
 Automated workflow to predict multireference character of molecules in quantum chemistry calculation
 """
-from setuptools import setup
-import setuptools
+from setuptools import setup, find_packages
 import versioneer
 
 short_description = __doc__.split("\n")
@@ -29,7 +28,7 @@ setup(
 
     # Which Python importable modules should be included when your package is installed
     #packages=['MultirefPredict', "MultirefPredict.tests"],
-    packages=setuptools.find_packages(),
+    packages=find_packages(),
 
     # Optional include package data to ship with your package
     # Comment out this line to prevent the files from being packaged with your software
