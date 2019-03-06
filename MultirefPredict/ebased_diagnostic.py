@@ -3,7 +3,7 @@ energy_based_diag.py
 
 Classes that calculate the energy based multireference diagnostics
 """
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 import qcengine
 import qcelemental
 from MultirefPredict.spin import atomSpinMultDict

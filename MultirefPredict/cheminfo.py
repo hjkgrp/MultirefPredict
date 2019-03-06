@@ -1,5 +1,4 @@
 import qcelemental
-import sys
 import openbabel
 
 def qcelemental2xyz(molecule):
