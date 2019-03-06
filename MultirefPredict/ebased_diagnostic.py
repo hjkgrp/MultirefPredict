@@ -16,7 +16,7 @@ class EBasedDiagnostic(Diagnostic):
 
         for key,value in kwargs.items():
             if key not in ["molecule","program"]:
-                raise KeyError("B1 diagnostic: unrecoganized key")
+                raise KeyError("Energy based diagnostic: unrecoganized key")
 
         self.molecule = kwargs['molecule']
 
@@ -29,7 +29,7 @@ class EBasedDiagnostic(Diagnostic):
             self.program = "psi4"
 
         if self.program not in available_programs:
-            raise ValueError("B1 diagnostic: specified program is not supported yet")
+            raise ValueError("Energy based diagnostic: specified program is not supported yet")
 
         self.numBonds = qcelemental2OBMol(self.molecule).NumBonds()
         self.atomized = {} 
