@@ -2,7 +2,7 @@
 MultirefPredict
 Automated workflow to predict multireference character of molecules in quantum chemistry calculation
 """
-from setuptools import setup, findpackages
+from setuptools import setup, find_packages
 import versioneer
 
 short_description = __doc__.split("\n")
