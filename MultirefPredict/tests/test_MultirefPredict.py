@@ -25,3 +25,9 @@ def test_diagnostic_factory(qcelemental_water):
     A25PBEThre = 1e-6
     expected = 0.1626572016077259
     assert fuzzyEqual(diag, expected, A25PBEThre)
+
+    calculator = MultirefPredict.diagnostic_factory("TAE", molecule=qcelemental_water)
+    diag = calculator.computeDiagnostic()
+    TAEThre = 1e-6
+    expected = 0.28078682517214126
+    assert fuzzyEqual(diag, expected, TAEThre)

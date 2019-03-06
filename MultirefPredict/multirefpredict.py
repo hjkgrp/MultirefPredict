@@ -4,7 +4,7 @@ Automated workflow to predict multireference character of molecules in quantum c
 
 Handles the primary functions
 """
-from MultirefPredict.ebased_diagnostic import B1,A25PBE
+from MultirefPredict.ebased_diagnostic import B1,A25PBE,TAE
 
 def diagnostic_factory(diagnostic_type, **kwargs):
     """
@@ -22,7 +22,7 @@ def diagnostic_factory(diagnostic_type, **kwargs):
     -------
     cls_instance:  instance of a class for calculating specific diagnostics
     """
-    cls_dict = dict(B1=B1,A25PBE=A25PBE)
+    cls_dict = dict(B1=B1,A25PBE=A25PBE,TAE=TAE)
     
     if diagnostic_type not in cls_dict.keys():
         raise Exception("Diagnostic type not found")

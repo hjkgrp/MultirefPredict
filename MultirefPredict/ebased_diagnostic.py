@@ -31,7 +31,6 @@ class EBasedDiagnostic(Diagnostic):
         if self.program not in available_programs:
             raise ValueError("Energy based diagnostic: specified program is not supported yet")
 
-        self.numBonds = qcelemental2OBMol(self.molecule).NumBonds()
         self.atomized = {} 
 
     """
@@ -144,6 +143,7 @@ class EBasedDiagnostic(Diagnostic):
 class B1(EBasedDiagnostic):
     def __init__(self, **kwargs):
         EBasedDiagnostic.__init__(self, **kwargs)
+        self.numBonds = qcelemental2OBMol(self.molecule).NumBonds()
 
     """
     Compute the B1 diagnostic
@@ -172,7 +172,23 @@ class A25PBE(EBasedDiagnostic):
         self.mol2atoms()
         TAE_PBE = self.computeBE("pbe")
         TAE_PBE0 = self.computeBE("pbe0")
-        print("Number of bonds in the molecule: ", self.numBonds)
         diag = 4*(1-TAE_PBE0/TAE_PBE)
         print("\nA25PBE DIAGNOSTICS: {:.3f}".format(diag))
+        return diag
+
+class TAE(EBasedDiagnostic):
+    def __init__(self, **kwargs):
+        EBasedDiagnostic.__init__(self, **kwargs)
+
+    """
+    Compute the TAE diagnostic
+    """
+    def computeDiagnostic(self):
+        print("Compute TAE diagnostic of the given molecule:")
+        self.molecule.pretty_print()
+        self.mol2atoms()
+        TAE_CCSD = self.computeBE("ccsd")
+        TAE_CCSDT = self.computeBE("ccsd(t)")
+        diag = 100*(1-TAE_CCSD/TAE_CCSDT)
+        print("\nTAE DIAGNOSTICS: {:.3f}".format(diag))
         return diag
