@@ -31,3 +31,33 @@ def test_diagnostic_factory(qcelemental_water):
     TAEThre = 1e-6
     expected = 0.28078682517214126
     assert fuzzyEqual(diag, expected, TAEThre)
+
+    Thre = 1e-6
+    calculator = MultirefPredict.diagnostic_factory("CCBased", molecule=qcelemental_water)
+    diag = calculator.computeDiagnostic()
+    expected = {'T1': 0.005903453140867589, 'D1': 0.012965638464472996, 'D2': 0.12885433260716933, 'New D1': 0.012965638464472996}
+    print(diag)
+    for key,value in diag.items():
+        assert fuzzyEqual(value, expected[key], Thre)
+
+    calculator = MultirefPredict.diagnostic_factory("T1", molecule=qcelemental_water)
+    diag = calculator.computeDiagnostic()
+    expected = {'T1': 0.005903453140867589, 'D1': 0.012965638464472996, 'D2': 0.12885433260716933, 'New D1': 0.012965638464472996}
+    print(diag)
+    for key,value in diag.items():
+        assert fuzzyEqual(value, expected[key], Thre)
+
+    calculator = MultirefPredict.diagnostic_factory("D1", molecule=qcelemental_water)
+    diag = calculator.computeDiagnostic()
+    expected = {'T1': 0.005903453140867589, 'D1': 0.012965638464472996, 'D2': 0.12885433260716933, 'New D1': 0.012965638464472996}
+    print(diag)
+    for key,value in diag.items():
+        assert fuzzyEqual(value, expected[key], Thre)
+
+    calculator = MultirefPredict.diagnostic_factory("D2", molecule=qcelemental_water)
+    diag = calculator.computeDiagnostic()
+    expected = {'T1': 0.005903453140867589, 'D1': 0.012965638464472996, 'D2': 0.12885433260716933, 'New D1': 0.012965638464472996}
+    print(diag)
+    for key,value in diag.items():
+        assert fuzzyEqual(value, expected[key], Thre)
+
