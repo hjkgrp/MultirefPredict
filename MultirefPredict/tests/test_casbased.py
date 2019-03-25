@@ -37,4 +37,4 @@ def test_C0():
     diag = obtainC0fromstr(outfile)
     expected = 0.995293
     Thre = 1e-3
-    assert fuzzyEqual(diag, expected, Thre)
+    assert fuzzyEqual(abs(diag), expected, Thre)
