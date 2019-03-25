@@ -41,8 +41,7 @@ setup(
     # url='http://www.my_package.com',  # Website
     install_requires=[
         'qcelemental>=0.2.6',
-        'qcenegine',
-        'openbabel>=2.4.1'
+        'qcengine',
     ],              # Required packages, pulls from pip if needed; do not use for Conda deployment
     tests_require=[
         'pytest',

@@ -6,6 +6,7 @@ Handles the primary functions
 """
 from MultirefPredict.ebased_diagnostic import B1,A25PBE,TAE
 from MultirefPredict.ccbased_diagnostic import CCBased
+from MultirefPredict.casbased_diagnostic import C0
 
 def diagnostic_factory(diagnostic_type, **kwargs):
     """
@@ -25,8 +26,9 @@ def diagnostic_factory(diagnostic_type, **kwargs):
     """
     cls_dict = dict(B1=B1,A25PBE=A25PBE,TAE=TAE, 
                     T1=CCBased, D1=CCBased, D2=CCBased,
-                    CCBased=CCBased)
-    
+                    CCBased=CCBased,
+                    C0=C0)
+
     if diagnostic_type not in cls_dict.keys():
         raise Exception("Diagnostic type not found")
 
