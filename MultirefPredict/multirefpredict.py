@@ -31,8 +31,6 @@ def diagnostic_factory(diagnostic_type, **kwargs):
 
     if diagnostic_type not in cls_dict.keys():
         raise Exception("Diagnostic type not found")
-
     cls = cls_dict[diagnostic_type]
-    kwargs.update({"diagnostic_type": diagnostic_type})
     cls_instance = cls(**kwargs)
     return cls_instance

@@ -10,28 +10,12 @@ from MultirefPredict.spin import atomSpinMultDict
 from MultirefPredict.cheminfo import qcelemental2OBMol
 from MultirefPredict.diagnostic import Diagnostic
 
-available_programs =  ["psi4"]
+
 class CCBased(Diagnostic):
     def __init__(self, **kwargs):
-
-        for key,value in kwargs.items():
-            if key not in ["molecule","program"]:
-                raise KeyError("Energy based diagnostic: unrecoganized key")
-
-        self.molecule = kwargs['molecule']
-
-        if not isinstance(self.molecule,qcelemental.models.Molecule):
-            raise TypeError("Argument molecule must be a molecule instance")
-
-        if "program" in kwargs:
-            self.program = kwargs["program"]
-        else:
-            self.program = "psi4"
-
-        if self.program not in available_programs:
-            raise ValueError("Energy based diagnostic: specified program is not supported yet")
-
-        self.result = None
+        Diagnostic.__init__(self, **kwargs)
+        self.diagnostic_type = "CCbased"
+        self.result = False
 
     """
     Do CCSD(T) calculation for the given molecule

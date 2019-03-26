@@ -20,7 +20,7 @@ def test_b1_init(qcelemental_water, xyz_water):
     assert b1_calculator.atomized == {}
 
     with pytest.raises(TypeError):
-         b1_calculator = B1(molecule=xyz_water)
+         b1_calculator = B1(molecule="NothingHere")
 
     with pytest.raises(KeyError):
          b1_calculator = B1()

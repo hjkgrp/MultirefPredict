@@ -16,7 +16,6 @@ class Diagnostic(ABC):
     def __init__(self, **kwargs):
         print("inputs dictionary:", kwargs)
         self.keywords_avail = keywords_avail
-        self.diagnostic_type = kwargs["diagnostic_type"]
         self.xyzfile = False
         self.molname = kwargs["molname"] if "molname" in kwargs.keys() else "undef"
         self.rundir = kwargs["rundir"] if "rundir" in kwargs.keys() else "./"
@@ -44,7 +43,7 @@ class Diagnostic(ABC):
                 raise ValueError(
                     "Cannot have both the xyzfile and 'qcelemental.models.Molecule' as inputs the same time.")
         else:
-            raise TypeError("Must input either a xyzfile file or an instance of 'qcelemental.models.Molecule'")
+            raise KeyError("Must input either a xyzfile file or an instance of 'qcelemental.models.Molecule'")
 
     @abstractmethod
     def computeDiagnostic(self):

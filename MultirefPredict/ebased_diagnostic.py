@@ -140,6 +140,7 @@ class EBasedDiagnostic(Diagnostic):
 class B1(EBasedDiagnostic):
     def __init__(self, **kwargs):
         EBasedDiagnostic.__init__(self, **kwargs)
+        self.diagnostic_type = "B1"
         self.numBonds = qcelemental2OBMol(self.molecule).NumBonds()
 
     """
@@ -165,6 +166,7 @@ class B1(EBasedDiagnostic):
 class A25PBE(EBasedDiagnostic):
     def __init__(self, **kwargs):
         EBasedDiagnostic.__init__(self, **kwargs)
+        self.diagnostic_type = "A25PBE"
 
     """
     Compute the A25PBE diagnostic
@@ -188,6 +190,7 @@ class A25PBE(EBasedDiagnostic):
 class TAE(EBasedDiagnostic):
     def __init__(self, **kwargs):
         EBasedDiagnostic.__init__(self, **kwargs)
+        self.diagnostic_type = "TAE"
 
     """
     Compute the TAE diagnostic

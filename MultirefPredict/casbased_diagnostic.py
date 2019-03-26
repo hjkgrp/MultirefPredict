@@ -63,6 +63,7 @@ class CASBasedDiagnostic(Diagnostic):
 class C0(CASBasedDiagnostic):
     def __init__(self, **kwargs):
         CASBasedDiagnostic.__init__(self, **kwargs)
+        self.diagnostic_type = "C0"
 
     """
     Compute the B1 diagnostic

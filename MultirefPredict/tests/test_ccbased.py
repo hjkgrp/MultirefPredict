@@ -4,13 +4,9 @@ Unit and regression test for the MultirefPredict package.
 
 # Import package, test suite, and other packages as needed
 import pytest
-import qcelemental
 from MultirefPredict.ccbased_diagnostic import CCBased
 from .compare import fuzzyEqual
-import sys
-import os
-import qcengine
-import psi4
+
 
 @pytest.fixture(scope="class")
 def cc_water(qcelemental_water):
@@ -24,12 +20,12 @@ def cc_water_not_psi4(qcelemental_water):
     return ccbased
 
 def test_cc_init(qcelemental_water, xyz_water):
-    ccbased_calculator = CCBased(molecule = qcelemental_water)
+    ccbased_calculator = CCBased(molecule=qcelemental_water)
     assert ccbased_calculator.molecule == qcelemental_water
     assert ccbased_calculator.program == "psi4"
 
     with pytest.raises(TypeError):
-         ccbased_calculator = CCBased(molecule=xyz_water)
+         ccbased_calculator = CCBased(molecule="NothingHere")
 
     with pytest.raises(KeyError):
          ccbased_calculator = CCBased()
