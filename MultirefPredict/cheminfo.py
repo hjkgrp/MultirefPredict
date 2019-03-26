@@ -21,7 +21,7 @@ def qcelemental2OBMol(molecule):
 
 def xyzfile2qcelemental(xyzfile, charge=0, spinmult=1):
     xyz = open(xyzfile).readlines()
-    mol_str = str(charge)+" "+str(spinmult)
+    mol_str = str(charge)+" "+str(spinmult) + "\n"
     for i in range(2, len(xyz)):
         mol_str += xyz[i]
     molecule = qcelemental.models.Molecule.from_data(mol_str)
