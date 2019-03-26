@@ -21,7 +21,6 @@ def obtainC0fromstr(outfile):
                 C0 = float(line.split()[2])
             except:
                 C0 = np.nan
-            break
     return C0
 
 
