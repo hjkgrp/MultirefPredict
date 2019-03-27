@@ -6,7 +6,8 @@ import json
 
 def qcres_to_json(res, filename):
     outdict = res.dict()
-    outdict['molecule']['geometry'] = outdict['molecule']['geometry'].flatten().tolist()
+    if "molecule" in outdict.keys():
+        outdict['molecule']['geometry'] = outdict['molecule']['geometry'].flatten().tolist()
     f = open(filename, 'w')
     json.dump(outdict, f)
     f.close()
