@@ -35,8 +35,8 @@ def test_cc_init(qcelemental_water, xyz_water):
                                       program = "terachem")
 
 def test_cc_computeCCSDT(cc_water,cc_water_not_psi4):
-    result = cc_water.computeCCSDT()
-    assert result.success
+    cc_water.computeCCSDT()
+    assert cc_water.result.success
     
     with pytest.raises(ValueError):
         cc_water_not_psi4.computeCCSDT()
