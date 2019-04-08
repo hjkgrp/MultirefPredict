@@ -10,8 +10,6 @@ import qcelemental
 from MultirefPredict.diagnostic import Diagnostic
 from MultirefPredict.io_tools import qcres_to_json, write_diagnostics_to_json
 
-available_programs = ["psi4"]
-
 
 def obtainC0fromstr(outfile):
     C0 = 'undef'

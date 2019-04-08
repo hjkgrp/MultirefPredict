@@ -14,6 +14,9 @@ class CCBased(Diagnostic):
         Diagnostic.__init__(self, **kwargs)
         self.diagnostic_type = "CCbased"
         self.result = False
+        if self.program != "psi4":
+            raise ValueError("Support for packages other than psi4 for CCBased \
+                              diagnostics is to be done\n")
 
     """
     Do CCSD(T) calculation for the given molecule

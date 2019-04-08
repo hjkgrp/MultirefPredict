@@ -12,8 +12,6 @@ from MultirefPredict.spin import atomSpinMultDict
 from MultirefPredict.cheminfo import qcelemental2OBMol
 from MultirefPredict.diagnostic import Diagnostic
 
-available_programs = ["psi4"]
-
 
 class EBasedDiagnostic(Diagnostic):
     def __init__(self, **kwargs):
@@ -72,23 +70,42 @@ class EBasedDiagnostic(Diagnostic):
     Compute the binding energy of the molecule with given method
     """
 
+    def energyTask(self, mol, method, program):
+        task = None
+        if program == "psi4":
+            task = qcelemental.models.ResultInput(
+                molecule=mol,
+                driver="energy",
+                model={"method": method, "basis": "6-31g"},
+            )
+        elif program == "terachem":
+            tc_method = method if mol.molecular_multiplicity == 1 else "u" + method
+            task = qcelemental.models.ResultInput(
+                molecule=mol,
+                driver="energy",
+                model={"method": method, "basis": "6-31g"},
+                keywords={"gpus":"1",
+                          "maxit":"1500", 
+                          "scf":"diis+a", 
+                          "convthre":"1e-6",  
+                          "precision":"double",
+                          "units":"bohr",
+                          "method":tc_method}
+            )
+        return task
+
     def computeBE(self, method):
         print("")
         print("Calculate atomization energy with method: ", method)
-        if self.program != "psi4":
-            raise ValueError("Support for packages other than psi4 is to be done\n")
 
         # Caculate energy for the whole molecule
-        molecule_task = qcelemental.models.ResultInput(
-            molecule=self.molecule,
-            driver="energy",
-            model={"method": method, "basis": "6-31g"},
-        )
+        molecule_task = self.energyTask(self.molecule, method, self.program)
 
         print("Evaluating the energy of the whole molecule...")
-        molecule_result = qcengine.compute(molecule_task, "psi4")
+        molecule_result = qcengine.compute(molecule_task, self.program)
         if self.record:
-            filename = self.rundir + "/" + self.diagnostic_type + "_" + self.molname + "_" + method + "_" + "whole" + ".json"
+            filename = self.rundir + "/" + self.diagnostic_type + "_" \
+                       + self.molname + "_" + method + "_" + "whole" + ".json"
             qcres_to_json(molecule_result, filename=filename)
         if not molecule_result.success:
             raise RuntimeError("Quantum chemistry calculation failed.")
@@ -101,16 +118,18 @@ class EBasedDiagnostic(Diagnostic):
 
         # Calculate energy for each unique atom at the atomization limit
         for symbol in self.atomized:
-            atom_task = qcelemental.models.ResultInput(
-                molecule=self.atomized[symbol]["molecule"],
-                driver="energy",
-                model={"method": method, "basis": "6-31g"},
-            )
-            atom_result = qcengine.compute(atom_task, "psi4")
+            atom_result = None
+            if self.program == "terachem" and symbol == "H":
+                 atom_task = self.energyTask(self.atomized[symbol]["molecule"], method, "psi4")
+                 atom_result = qcengine.compute(atom_task, "psi4")
+            else:
+                 atom_task = self.energyTask(self.atomized[symbol]["molecule"], method, self.program)
+                 atom_result = qcengine.compute(atom_task, self.program)
             if not atom_result.success:
                 raise RuntimeError("Quantum chemistry calculation failed.")
             if self.record:
-                filename = self.rundir + "/" + self.diagnostic_type + "_" + self.molname + "_" + method + "_" + symbol + ".json"
+                filename = self.rundir + "/" + self.diagnostic_type + "_"\
+                           + self.molname + "_" + method + "_" + symbol + ".json"
                 qcres_to_json(atom_result, filename=filename)
             atom_energy = atom_result.return_result
             print("Final energy of atom ", symbol, " (Hartree): {:.8f}".format(atom_energy))
@@ -191,6 +210,9 @@ class TAE(EBasedDiagnostic):
     def __init__(self, **kwargs):
         EBasedDiagnostic.__init__(self, **kwargs)
         self.diagnostic_type = "TAE"
+        if self.program != "psi4":
+            raise ValueError("Support for packages other than psi4 for TAE \
+                              diagnostic is to be done\n")
 
     """
     Compute the TAE diagnostic

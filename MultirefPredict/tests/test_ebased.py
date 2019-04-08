@@ -5,7 +5,8 @@ Unit and regression test for the MultirefPredict package.
 # Import package, test suite, and other packages as needed
 import pytest
 import qcelemental
-from MultirefPredict.ebased_diagnostic import B1,A25PBE
+from MultirefPredict.ebased_diagnostic import B1, A25PBE, TAE
+from qcengine.testing import using_terachem
 from .compare import fuzzyEqual
 import sys
 import os
@@ -94,13 +95,48 @@ def test_b1_computeDiagnostic(b1_water):
     expected = 0.006334860365228678
     assert fuzzyEqual(diag,0.006334860365228678, B1Thre)
 
+#@pytest.fixture(scope="class")
+#def b1_water_terachem(qcelemental_water):
+#    b1 = B1(molecule=qcelemental_water, program="terachem")
+#    return b1
+#
+#def test_b1_terachem(b1_water_terachem):
+#    B1Thre = 1e-6
+#    diag = b1_water_terachem.computeDiagnostic()
+#    expected = 0.006334860365228678
+#    assert fuzzyEqual(diag,0.006334860365228678, B1Thre)
+
 @pytest.fixture(scope="class")
 def a25pbe_water(qcelemental_water):
     a25pbe = A25PBE(molecule=qcelemental_water)
     return a25pbe
 
-def test_a25tae_computeDiagnostic(a25pbe_water):
-    A25PBEThre = 1e-6
+def test_a25pbe_computeDiagnostic(a25pbe_water):
+    A25PBEThre = 1e-3
     diag = a25pbe_water.computeDiagnostic()
     expected = 0.1626572016077259
     assert fuzzyEqual(diag, expected, A25PBEThre)
+
+@pytest.fixture(scope="class")
+def a25_water_terachem(qcelemental_water):
+    a25 = A25PBE(molecule=qcelemental_water, program="terachem")
+    return a25
+
+@using_terachem
+def test_a25_terachem(a25_water_terachem):
+    A25PBEThre = 1e-3
+    diag = a25_water_terachem.computeDiagnostic()
+    expected = 0.1626572016077259
+    assert fuzzyEqual(diag, expected, A25PBEThre)
+
+@pytest.fixture(scope="class")
+def tae_water(qcelemental_water):
+    tae = TAE(molecule=qcelemental_water)
+    return tae 
+
+def test_a25tae_computeDiagnostic(tae_water):
+    TAEThre = 1e-3
+    diag = tae_water.computeDiagnostic()
+    expected = 0.281577634
+    assert fuzzyEqual(diag, expected, TAEThre)
+
