@@ -33,7 +33,6 @@ def test_cc_init(qcelemental_water, xyz_water):
     with pytest.raises(ValueError):
          ccbased_calculator = CCBased(molecule = qcelemental_water, 
                                       program = "terachem")
-@pytest.mark.skip(reason="Temporily skip this test on Travis CI")
 def test_cc_computeCCSDT(cc_water,cc_water_not_psi4):
     cc_water.computeCCSDT()
     assert cc_water.result.success
@@ -41,6 +40,7 @@ def test_cc_computeCCSDT(cc_water,cc_water_not_psi4):
     with pytest.raises(ValueError):
         cc_water_not_psi4.computeCCSDT()
 
+@pytest.mark.skip(reason="Temporily skip this test on Travis CI")
 def test_cc_computeDiagnostic(cc_water):
     Thre = 1e-6
     diag = cc_water.computeDiagnostic()
