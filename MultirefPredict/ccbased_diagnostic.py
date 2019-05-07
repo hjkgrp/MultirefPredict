@@ -59,10 +59,10 @@ class CCBased(Diagnostic):
         if not self.result.success:
             raise RuntimeError("Quantum chemistry calculation failed.")
 
-        T1 = self.result.extras['local_qcvars']['CC T1 DIAGNOSTIC']
-        D1 = self.result.extras['local_qcvars']['CC D1 DIAGNOSTIC']
-        D2 = self.result.extras['local_qcvars']['CC D2 DIAGNOSTIC']
-        NewD1 = self.result.extras['local_qcvars']['CC NEW D1 DIAGNOSTIC']
+        T1 = self.result.extras['qcvars']['CC T1 DIAGNOSTIC']
+        D1 = self.result.extras['qcvars']['CC D1 DIAGNOSTIC']
+        D2 = self.result.extras['qcvars']['CC D2 DIAGNOSTIC']
+        NewD1 = self.result.extras['qcvars']['CC NEW D1 DIAGNOSTIC']
         diag = {"T1": T1, "D1": D1, "D2": D2, "New D1": NewD1}
         print("\nCCBased DIAGNOSTICS:", diag)
         if self.record:
