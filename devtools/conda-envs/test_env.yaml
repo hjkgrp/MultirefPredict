@@ -27,5 +27,5 @@ dependencies:
   - pip:
     - codecov
     - git+https://github.com/leeping/geomeTRIC#egg=geometric
-    - git+https://github.com/MolSSI/QCEngine.git@master#egg=qcengine
+    - git+https://github.com/ffangliu/QCEngine.git@terachemmol#egg=qcengine
     - git+https://github.com/MolSSI/QCElemental.git@master#egg=qcelemental
