@@ -1,0 +1,181 @@
+"""
+energy_based_diag.py
+
+Classes that calculate the energy based multireference diagnostics
+"""
+import qcengine
+import qcelemental
+import math
+
+from MultirefPredict.io_tools import qcres_to_json, write_diagnostics_to_json
+from MultirefPredict.diagnostic import Diagnostic
+from MultirefPredict.basis_info import molecule_to_num_AO
+
+
+class FonBased(Diagnostic):
+    def __init__(self, **kwargs):
+        Diagnostic.__init__(self, **kwargs)
+        self.fons = None
+        self.restricted = False
+        self.norb = 0
+        self.ncore = 0
+        self.nele = 0
+
+    """
+    Compute the Fractional Occupation SCF of the molecule with PBE, 5000K
+    """
+    def FonTask(self, mol, program, method):
+        task = None
+        #Default parameters
+        basis_set = "lacvps_ecp"
+        temp = 0.0158
+        #TODO add HFX dependent temperature determination
+        # Set the core orbitals as frozen and allow FON for all others
+        self.norb, self.ncore = molecule_to_num_AO(mol, basis_set)
+        if program == "terachem":
+            tc_method = method if mol.molecular_multiplicity == 1 else "u" + method
+            task = qcelemental.models.ResultInput(
+                molecule=mol,
+                driver="energy",
+                model={"method": method, "basis": basis_set},
+                keywords={"gpus": "1",
+                          "maxit": "1500", 
+                          "scf": "diis+a", 
+                          "convthre": "1e-6",  
+                          "precision": "double",
+                          "units": "bohr",
+                          "fon": "yes",
+                          "fon_method": "fermi",
+                          "fon_temperature": temp,
+                          "fon_print": "1",
+                          "method": method,
+                          "closed": self.ncore,
+                          "active": self.norb-self.ncore}
+            )
+        else:
+            raise ValueError("FON calculation is not implemented for the requested program yet.")
+        return task
+
+    """
+    Harvest FON numbers from FON calculation result
+    """
+    def harvestFon(self, result):
+        datain = result.dict()["stdout"].split('\n')
+        fons = {}
+        for i in range(0,len(datain)):
+            if "Total electrons:" in datain[i]:
+                self.nele = int(datain[i].strip('\n').split()[2])
+            if "Wavefunction: RESTRICTED" in datain[i]:
+                self.restricted = True
+            if "SCF Fractional Occupations" in datain[i]:
+                # Store the beta orbitals with index norb+1, norb+2, ...
+                orb_offset = self.norb if len(fons) > 0 else 0
+                nlines = int(math.ceil(float(self.norb)/4))
+                for j in range(i+3, i+3+nlines):
+                    line = datain[j].strip('\n').split()
+                    for k in range(0,len(line)):
+                        if k%2 == 0:
+                            idx = int(line[k]) + orb_offset
+                            fon = float(line[k+1])
+                            if fon > 1e-6 and fon < 1.0:
+                                fons[idx] = fon 
+        return fons
+
+    """
+    Conduct FON calculation
+    """
+    def computeFon(self, method):
+        print("")
+        print("Fractional Occupation Number SCF with PBE/lacvps_ecp, at 5000K")
+
+        # Caculate energy for the whole molecule
+        molecule_task = self.FonTask(self.molecule, self.program, method)
+
+        molecule_result = qcengine.compute(molecule_task, self.program)
+        if self.record:
+            filename = self.rundir + "/" + self.diagnostic_type + "_" \
+                       + self.molname + "_" + method + "_" + "whole" + ".json"
+            qcres_to_json(molecule_result, filenailename)
+        if not molecule_result.success:
+            raise RuntimeError("Quantum chemistry calculation failed.")
+        print("FON calculation finished. Harvesting FON info.")
+        self.fons = self.harvestFon(molecule_result)
+
+    """
+    compute FOD
+    """
+    def getFOD(self, fons, norb, nele, restricted):
+        FOD = 0 
+        zero_temp_homo_a = 0 
+        zero_temp_homo_b = 0 
+        spin_mult = self.molecule.molecular_multiplicity
+        
+        if restricted:
+            zero_temp_homo_a = nele/2
+        else:
+            unpaired = spin_mult - 1 
+            zero_temp_homo_b = (nele-unpaired)/2 
+            zero_temp_homo_a = zero_temp_homo_b + unpaired
+        
+        
+        factor = 2.0 if restricted else 1.0 
+        
+        for key,value in fons.items():
+            if  key <= norb: #alpha orbitals
+               f = value if key > zero_temp_homo_a else 1-value
+            else: # beta orbitals
+               f = value if key-norb > zero_temp_homo_b else 1-value
+        
+            my_FOD = f* factor
+            FOD +=  my_FOD
+        return FOD
+    """
+    compute Matito
+    """
+    def getMattito(self, fons, norb, restricted):
+        I_ND = 0    
+        I_T = 0 
+        
+        factor = 2.0 if restricted else 1.0 
+        for key,value in fons.items():
+            my_I_T = 0.25 * math.sqrt(value * (1-value)) * factor
+            I_T += my_I_T
+        
+            my_I_ND = 0.5* value * (1-value) * factor
+            I_ND +=  my_I_ND
+        
+        I_D = I_T - I_ND
+        return I_D,I_ND
+    
+    def getEntanglement(self,fons, norbs, restricted):
+        if not restricted:
+            print("Warning: Only support calculation of natural orbital occupations.")
+            print("For unrestricted calculations, Unrestricted Natural Orbitals are needed but not supported in TreaChem yet")
+            return -1
+        
+        S=0
+        for key,value in fons.items():
+            S += -value*math.log(value)
+        return S
+
+
+    """
+    Compute the diagnostic
+    """
+
+    def computeDiagnostic(self):
+        print("Compute FON based diagnostic of the given molecule:")
+        if self.fons is None:
+           self.computeFon("PBE")
+        FOD = self.getFOD(self.fons, self.norb, self.nele, self.restricted)
+        I_D,I_ND = self.getMattito(self.fons, self.norb, self.restricted)
+        S = self.getEntanglement(self.fons, self.norb, self.restricted)
+        diag = {"FOD": FOD,
+                "Mattito": {"I_D":I_D, "I_ND":I_ND},
+                "Entanglement": S
+               }
+        if self.record:
+            diag_dict = {self.diagnostic_type: diag}
+            filename = self.rundir + "/" + self.molname + "_" + self.diagnostic_type + ".json"
+            write_diagnostics_to_json(diag_dict, filename)
+        return diag
