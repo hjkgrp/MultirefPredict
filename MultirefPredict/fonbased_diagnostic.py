@@ -37,7 +37,7 @@ class FonBased(Diagnostic):
             task = qcelemental.models.ResultInput(
                 molecule=mol,
                 driver="energy",
-                model={"method": method, "basis": basis_set},
+                model={"method": tc_method, "basis": basis_set},
                 keywords={"gpus": "1",
                           "maxit": "1500", 
                           "scf": "diis+a", 
@@ -48,7 +48,7 @@ class FonBased(Diagnostic):
                           "fon_method": "fermi",
                           "fon_temperature": temp,
                           "fon_print": "1",
-                          "method": method,
+                          "method": tc_method,
                           "closed": self.ncore,
                           "active": self.norb-self.ncore}
             )
@@ -149,8 +149,8 @@ class FonBased(Diagnostic):
     
     def getEntanglement(self,fons, norbs, restricted):
         if not restricted:
-            print("Warning: Only support calculation of natural orbital occupations.")
-            print("For unrestricted calculations, Unrestricted Natural Orbitals are needed but not supported in TreaChem yet")
+            print("Warning: Entanglement only support calculation of natural orbital occupations.")
+            print("For unrestricted entanglement calculations, Unrestricted Natural Orbitals are needed but not supported in TreaChem yet")
             return -1
         
         S=0
