@@ -19,6 +19,7 @@ def test_fon_computeFon(fon_cu_complex):
     result = fon_cu_complex.computeFon("PBE")
     assert fon_cu_complex.fons is not None
 
+@using_terachem
 def test_fon_computeDiagnostic(fon_cu_complex):
     Thre = 1e-3
     diag = fon_cu_complex.computeDiagnostic()
