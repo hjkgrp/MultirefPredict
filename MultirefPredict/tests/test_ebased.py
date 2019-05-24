@@ -7,9 +7,8 @@ import pytest
 import qcelemental
 from MultirefPredict.ebased_diagnostic import B1, A25PBE, TAE
 from qcengine.testing import using_terachem
-from .compare import fuzzyEqual
+from qcelemental.testing import compare_recursive
 import sys
-import os
 import qcengine
 import psi4
 
@@ -84,16 +83,18 @@ def test_b1_computeBE(b1_water):
     EnergyThre = 1e-6
 
     BE_blyp = b1_water.computeBE("blyp")
-    assert fuzzyEqual(BE_blyp,0.33100268529368293, EnergyThre)
+    expected = 0.33100268529368293
+    assert compare_recursive(BE_blyp, expected, atol = EnergyThre)
 
     BE_b1lyp = b1_water.computeBE("b1lyp")
-    assert fuzzyEqual(BE_b1lyp,0.3183329645632256,EnergyThre)
+    expected = 0.3183329645632256
+    assert compare_recursive(BE_b1lyp, expected, atol = EnergyThre)
 
 def test_b1_computeDiagnostic(b1_water):
     B1Thre = 1e-6
     diag = b1_water.computeDiagnostic()
     expected = 0.006334860365228678
-    assert fuzzyEqual(diag,0.006334860365228678, B1Thre)
+    assert compare_recursive(diag, expected, atol = B1Thre)
 
 #@pytest.fixture(scope="class")
 #def b1_water_terachem(qcelemental_water):
@@ -104,7 +105,7 @@ def test_b1_computeDiagnostic(b1_water):
 #    B1Thre = 1e-6
 #    diag = b1_water_terachem.computeDiagnostic()
 #    expected = 0.006334860365228678
-#    assert fuzzyEqual(diag,0.006334860365228678, B1Thre)
+#    assert compare_recursive(diag, expected, atol = B1Thre)
 
 @pytest.fixture(scope="class")
 def a25pbe_water(qcelemental_water):
@@ -115,7 +116,7 @@ def test_a25pbe_computeDiagnostic(a25pbe_water):
     A25PBEThre = 1e-3
     diag = a25pbe_water.computeDiagnostic()
     expected = 0.1626572016077259
-    assert fuzzyEqual(diag, expected, A25PBEThre)
+    assert compare_recursive(diag, expected, atol = A25PBEThre)
 
 @pytest.fixture(scope="class")
 def a25_water_terachem(qcelemental_water):
@@ -127,7 +128,7 @@ def test_a25_terachem(a25_water_terachem):
     A25PBEThre = 1e-3
     diag = a25_water_terachem.computeDiagnostic()
     expected = 0.1626572016077259
-    assert fuzzyEqual(diag, expected, A25PBEThre)
+    assert compare_recursive(diag, expected, atol = A25PBEThre)
 
 @pytest.fixture(scope="class")
 def tae_water(qcelemental_water):
@@ -138,5 +139,5 @@ def test_a25tae_computeDiagnostic(tae_water):
     TAEThre = 1e-3
     diag = tae_water.computeDiagnostic()
     expected = 0.281577634
-    assert fuzzyEqual(diag, expected, TAEThre)
+    assert compare_recursive(diag, expected, atol = TAEThre)
 

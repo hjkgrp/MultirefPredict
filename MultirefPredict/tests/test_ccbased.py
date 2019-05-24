@@ -5,7 +5,7 @@ Unit and regression test for the MultirefPredict package.
 # Import package, test suite, and other packages as needed
 import pytest
 from MultirefPredict.ccbased_diagnostic import CCBased
-from .compare import fuzzyEqual
+from qcelemental.testing import compare_recursive
 
 
 @pytest.fixture(scope="class")
@@ -45,6 +45,4 @@ def test_cc_computeDiagnostic(cc_water):
     diag = cc_water.computeDiagnostic()
     expected = {'T1': 0.005903453140867589, 'D1': 0.012965638464472996, 'D2': 0.12885433260716933, 'New D1': 0.012965638464472996}
     print(diag)
-    for key,value in diag.items():
-        assert fuzzyEqual(value, expected[key], Thre)
-
+    assert compare_recursive(diag, expected, atol = Thre)

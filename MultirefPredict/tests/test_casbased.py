@@ -1,7 +1,7 @@
 import pytest
 import qcelemental
 import qcengine
-from .compare import fuzzyEqual
+from qcelemental.testing import compare_recursive
 from MultirefPredict.casbased_diagnostic import obtainC0fromstr
 
 
@@ -19,7 +19,7 @@ def test_casscf():
     energy = results.return_result
     expected = -74.91174384584482
     Thre = 1e-6
-    assert fuzzyEqual(energy, expected, Thre)
+    assert compare_recursive(energy, expected, atol=Thre)
 
 
 def test_C0():
@@ -37,4 +37,4 @@ def test_C0():
     diag = obtainC0fromstr(outfile)
     expected = 0.995293
     Thre = 1e-3
-    assert fuzzyEqual(abs(diag), expected, Thre)
+    assert compare_recursive(abs(diag), expected, atol=Thre)

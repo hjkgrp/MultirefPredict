@@ -25,6 +25,7 @@ def xyz_water():
 @pytest.fixture(scope="module")
 def qcelemental_cu_complex():
     mol = qcelemental.models.Molecule.from_data("\n"\
+        +"2 1\n"\
         +"O -0.420275 1.402468 0.101942\n"\
         +"O -0.440639 -0.486438 -0.102059\n"\
         +"Cu 1.098238 0.442692 -0.009679\n"\
