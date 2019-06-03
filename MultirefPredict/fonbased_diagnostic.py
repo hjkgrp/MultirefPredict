@@ -24,7 +24,7 @@ class FonBased(Diagnostic):
     """
     Compute the Fractional Occupation SCF of the molecule with PBE, 5000K
     """
-    def FonTask(self, mol, program, method):
+    def FonTask(self, mol, program, method="PBE"):
         task = None
         #Default parameters
         basis_set = "lacvps_ecp"
