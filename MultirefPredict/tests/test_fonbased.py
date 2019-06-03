@@ -19,21 +19,25 @@ def fon_cu_complex(qcelemental_cu_complex):
 def fon_trityl_radical(qcelemental_trityl_radical):
     fonbased = FonBased(molecule=qcelemental_trityl_radical, program="terachem")
     return fonbased
+
 @pytest.fixture(scope="class")
-def trityl_radical_task():
-    with open('data/fon_trityl_task.obj','rb') as task_file:
+def trityl_radical_task(datadir):
+    task_file_path = datadir+"fon_trityl_task.obj"
+    with open(task_file_path, 'rb') as task_file:
         task = pickle.load(task_file)
     return task
 
 @pytest.fixture(scope="class")
-def fon_trityl_result():
-    with open('data/fon_trityl_result.obj','rb') as result_file:
+def fon_trityl_result(datadir):
+    file_path = datadir + "fon_trityl_result.obj"
+    with open(file_path, 'rb') as result_file:
         result = pickle.load(result_file)
     return result
 
 @pytest.fixture(scope="class")
-def fon_cu_result():
-    with open('data/fon_cu_result.obj','rb') as result_file:
+def fon_cu_result(datadir):
+    file_path = datadir + "fon_cu_result.obj"
+    with open(file_path, 'rb') as result_file:
         result = pickle.load(result_file)
     return result
 
@@ -58,20 +62,20 @@ def test_fon_task(fon_trityl_radical, trityl_radical_task):
     Thre = 1e-6
     assert compare_recursive(fon_task.dict()['keywords'], trityl_radical_task.dict()['keywords'], atol=Thre)
 
-def test_harvestFon(fon_trityl_radical,fon_trityl_result, fon_cu_complex, fon_cu_result):
+def test_harvestFon(fon_trityl_radical, fon_trityl_result, fon_cu_complex, fon_cu_result):
     #first test trityl_radical
     fon_trityl_radical.FonTask(fon_trityl_radical.molecule, fon_trityl_radical.program, "PBE")
     fons=fon_trityl_radical.harvestFon(fon_trityl_result)
     expected_nele = 129
     assert fon_trityl_radical.nele == expected_nele
-    assert fon_trityl_radical.restricted== False
+    assert fon_trityl_radical.restricted == False
     assert len(fons) > 0
     #Then test cu_complex
     fon_cu_complex.FonTask(fon_cu_complex.molecule, fon_cu_complex.program, "PBE")
-    fons=fon_cu_complex.harvestFon(fon_cu_result)
+    fons = fon_cu_complex.harvestFon(fon_cu_result)
     expected_nele = 120
     assert fon_cu_complex.nele == expected_nele
-    assert fon_cu_complex.restricted== True
+    assert fon_cu_complex.restricted == True
     assert len(fons) > 0
 
 @using_terachem
@@ -91,6 +95,8 @@ def test_fon_computeFon_unrestricted(fon_trityl_radical):
     assert molecule_task is not None
     result = fon_trityl_radical.computeFon("PBE")
     assert fon_trityl_radical.fons is not None
+    with pytest.raises(RuntimeError):
+        failed_result = fon_trityl_radical.computeFon("TPSS")
 
 @using_terachem
 def test_fon_unrestricted(fon_trityl_radical):

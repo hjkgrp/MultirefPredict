@@ -3,6 +3,7 @@ Fixtures shared by tests in this directory
 """
 import pytest
 import qcelemental
+from pkg_resources import resource_filename, Requirement
 
 @pytest.fixture(scope="module")
 def qcelemental_water():
@@ -99,3 +100,7 @@ def qcelemental_trityl_radical():
         + "\n"
     )
     return mol
+@pytest.fixture(scope="module")
+def datadir():
+    mydir = resource_filename(Requirement.parse("MultirefPredict"),"MultirefPredict/tests/data/")
+    return mydir
