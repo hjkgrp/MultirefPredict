@@ -15,6 +15,7 @@ from MultirefPredict.basis_info import molecule_to_num_AO
 class FonBased(Diagnostic):
     def __init__(self, **kwargs):
         Diagnostic.__init__(self, **kwargs)
+        self.diagnostic_type = "FonBased"
         self.fons = None
         self.restricted = False
         self.norb = 0
@@ -95,7 +96,7 @@ class FonBased(Diagnostic):
         if self.record:
             filename = self.rundir + "/" + self.diagnostic_type + "_" \
                        + self.molname + "_" + method + "_" + "whole" + ".json"
-            qcres_to_json(molecule_result, filenailename)
+            qcres_to_json(molecule_result, filename)
         if not molecule_result.success:
             raise RuntimeError("Quantum chemistry calculation failed.")
         print("FON calculation finished. Harvesting FON info.")
