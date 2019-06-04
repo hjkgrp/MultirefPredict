@@ -28,7 +28,7 @@ def test_b1_init(qcelemental_water, xyz_water):
 
 @pytest.fixture(scope="class")
 def b1_water(qcelemental_water):
-    b1 = B1(molecule=qcelemental_water)
+    b1 = B1(molecule=qcelemental_water, program="psi4")
     return b1
 
 
