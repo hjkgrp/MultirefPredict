@@ -6,7 +6,6 @@ Unit and regression test for the MultirefPredict package.
 import pytest
 from MultirefPredict.fonbased_diagnostic import FonBased
 from qcengine.testing import using_terachem
-import qcengine.compute
 from qcelemental.testing import compare_recursive
 import pickle
 
@@ -80,7 +79,7 @@ def test_harvestFon(fon_trityl_radical, fon_trityl_result, fon_cu_complex, fon_c
 
 @using_terachem
 def test_fon_computeDiagnostic(fon_cu_complex):
-    Thre = 1e-3
+    Thre = 1e-2
     diag = fon_cu_complex.computeDiagnostic()
     expected = {'FOD': 0.980722,
                 'Mattito':{ 'I_D': 0.473731315028, 'I_ND':  0.431365088635}, 
@@ -100,7 +99,7 @@ def test_fon_computeFon_unrestricted(fon_trityl_radical):
 
 @using_terachem
 def test_fon_unrestricted(fon_trityl_radical):
-    Thre = 1e-3
+    Thre = 1e-2
     diag = fon_trityl_radical.computeDiagnostic()
     expected = {'FOD': 0.34399500000000005, 
                 'Mattito': {'I_D': 0.39268800205639215, 'I_ND': 0.16333423895850002},

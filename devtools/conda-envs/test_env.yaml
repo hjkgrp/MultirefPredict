@@ -5,7 +5,7 @@ channels:
   - openbabel
 dependencies:
     # Base depends
-  - python
+  - python=3.6
   - pip
 
     # Testing
@@ -16,7 +16,6 @@ dependencies:
   - dftd3
     # Core
   - numpy
-  - python
   - pyyaml
   - py-cpuinfo
   - psutil
