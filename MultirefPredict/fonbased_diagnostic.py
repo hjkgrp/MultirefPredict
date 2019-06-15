@@ -56,6 +56,9 @@ class FonBased(Diagnostic):
 
         temp_K = temp/3.16681e-6
 
+        print("")
+        print("Fractional Occupation Number SCF with " + method + "/"+basis_set)
+
         print("FON temperature: {0:10.5f} (KT in atomic unit) ".format(temp))
         print("                 {0:10.0f} (Kelvin) ".format(temp_K))
         #TODO add HFX dependent temperature determination
@@ -116,8 +119,6 @@ class FonBased(Diagnostic):
     Conduct FON calculation
     """
     def computeFon(self, method, basis=None):
-        print("")
-        print("Fractional Occupation Number SCF with " + method + "/"+basis)
         # Caculate energy for the whole molecule
         molecule_task = self.FonTask(self.molecule, self.program, method,None,basis)
 
