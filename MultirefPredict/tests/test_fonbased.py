@@ -8,6 +8,7 @@ from MultirefPredict.fonbased_diagnostic import FonBased
 from qcengine.testing import using_terachem
 from qcelemental.testing import compare_recursive
 import pickle
+from contextlib import contextmanager
 
 @pytest.fixture(scope="class")
 def fon_cu_complex(qcelemental_cu_complex):
@@ -47,6 +48,51 @@ def test_fon_init(qcelemental_trityl_radical):
     assert fonbased.norb == 0
     assert fonbased.ncore == 0
     assert fonbased.nele == 0
+
+@pytest.mark.parametrize("xc_list, expected_temperature", [
+    ("pbe", 0.0158),
+    ("blyp", 0.0158),
+    ("svwn", 0.0158),
+    ("revpbe", 0.0158),
+    ("bop", 0.0158),
+    ("b97", 0.0158),
+    ("b3lyp", 0.0285),
+    ("b3lyp1", 0.0285),
+    ("b3lyp3", 0.0285),
+    ("b3lyp5", 0.0285),
+    ("bhandhlyp", 0.0475),
+    ("pbe0", 0.0316),
+    ("revpbe0", 0.0316),
+    ])
+def test_fon_setTemperature(xc_list, expected_temperature, fon_cu_complex):
+    Thre = 1e-3
+    assert compare_recursive(fon_cu_complex.setTemperature(xc_list), expected_temperature, atol = Thre)
+
+@contextmanager
+def does_not_raise():
+    yield
+
+@pytest.mark.parametrize("xc, expectation", [
+    ("pbe", does_not_raise()),
+    ("blyp", does_not_raise()),
+    ("svwn", does_not_raise()),
+    ("revpbe", does_not_raise()),
+    ("bop", does_not_raise()),
+    ("b97", does_not_raise()),
+    ("b3lyp", does_not_raise()),
+    ("b3lyp1", does_not_raise()),
+    ("b3lyp3", does_not_raise()),
+    ("b3lyp5", does_not_raise()),
+    ("bhandhlyp", does_not_raise()),
+    ("pbe0", does_not_raise()),
+    ("revpbe0", does_not_raise()),
+    ("wpbeh", pytest.raises(ValueError)),
+    ("wpbe", pytest.raises(ValueError)),
+    ("camb3lyp", pytest.raises(ValueError)),
+    ])
+def test_fon_setTemperature_exception(xc, expectation, fon_cu_complex):
+    with expectation:
+        fon_cu_complex.setTemperature(xc)
 
 @using_terachem
 def test_fon_computeFon(fon_cu_complex):
@@ -94,7 +140,7 @@ def test_fon_computeFon_unrestricted(fon_trityl_radical):
     assert molecule_task is not None
     result = fon_trityl_radical.computeFon("PBE")
     assert fon_trityl_radical.fons is not None
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ValueError):
         failed_result = fon_trityl_radical.computeFon("TPSS")
 
 @using_terachem
@@ -107,3 +153,14 @@ def test_fon_unrestricted(fon_trityl_radical):
 
     print(diag)
     assert compare_recursive(diag, expected, atol=Thre)
+
+@using_terachem
+def test_fon_b3lyp(fon_trityl_radical):
+    Thre = 1e-2
+    diag2 = fon_trityl_radical.computeDiagnostic("b3lyp")
+    expected2 = {'FOD': 0.7340689999999996, 
+                 'Mattito': {'I_D': 0.7479020997602953, 'I_ND': 0.33741997473349994},
+                 'Entanglement': -1}
+
+    print(diag2)
+    assert compare_recursive(diag2, expected2, atol=Thre)

@@ -22,14 +22,42 @@ class FonBased(Diagnostic):
         self.ncore = 0
         self.nele = 0
 
+    def setTemperature(self, method):
+        if not isinstance(method, str):
+            raise ValueError("The arguement for DFT method must be of type str")
+        temp = 0.01583405237
+        LDAsOrGGAs = ["svwn", "pbe", "blyp", "revpbe", "bop", "b97" ]
+        hybrids = {"b3lyp": 0.2, "b3lyp1": 0.2, "b3lyp5": 0.2, "b3lyp3": 0.2,\
+                   "bhandhlyp": 0.5, "pbe0": 0.25, "revpbe0" : 0.25}
+        # Temperature for long range correct hybrids are undefined
+        if method.lower() in hybrids.keys():
+            HFX = hybrids[method.lower()]
+            temp = 0.06333620949 * HFX + temp
+        elif method.lower() not in LDAsOrGGAs:
+            raise ValueError("The temperature needed for running finite-temp DFT"\
+                            +"of the given XC functional " + method + " is undefined")
+        return temp
+
     """
-    Compute the Fractional Occupation SCF of the molecule with PBE, 5000K
+    Compute the Fractional Occupation SCF
     """
-    def FonTask(self, mol, program, method="PBE"):
+    def FonTask(self, mol, program, method, temperature=None, basis=None):
         task = None
         #Default parameters
         basis_set = "lacvps_ecp"
-        temp = 0.0158
+        if basis is not None:
+            basis_set = basis
+
+        temp = 0.01583405237
+        if temperature is not None:
+            temp = temperature
+        else:
+            temp = self.setTemperature(method)
+
+        temp_K = temp/3.16681e-6
+
+        print("FON temperature: {0:10.5f} (KT in atomic unit) ".format(temp))
+        print("                 {0:10.0f} (Kelvin) ".format(temp_K))
         #TODO add HFX dependent temperature determination
         # Set the core orbitals as frozen and allow FON for all others
         self.norb, self.ncore = molecule_to_num_AO(mol, basis_set)
@@ -66,8 +94,10 @@ class FonBased(Diagnostic):
         for i in range(0,len(datain)):
             if "Total electrons:" in datain[i]:
                 self.nele = int(datain[i].strip('\n').split()[2])
-            if "Wavefunction: RESTRICTED" in datain[i]:
+            if self.molecule.molecular_multiplicity == 1:
                 self.restricted = True
+            else:
+                self.restricted = False
             if "SCF Fractional Occupations" in datain[i]:
                 # Store the beta orbitals with index norb+1, norb+2, ...
                 orb_offset = self.norb if len(fons) > 0 else 0
@@ -85,12 +115,11 @@ class FonBased(Diagnostic):
     """
     Conduct FON calculation
     """
-    def computeFon(self, method):
+    def computeFon(self, method, basis=None):
         print("")
-        print("Fractional Occupation Number SCF with PBE/lacvps_ecp, at 5000K")
-
+        print("Fractional Occupation Number SCF with " + method + "/"+basis)
         # Caculate energy for the whole molecule
-        molecule_task = self.FonTask(self.molecule, self.program, method)
+        molecule_task = self.FonTask(self.molecule, self.program, method,None,basis)
 
         molecule_result = qcengine.compute(molecule_task, self.program)
         if self.record:
@@ -164,10 +193,10 @@ class FonBased(Diagnostic):
     Compute the diagnostic
     """
 
-    def computeDiagnostic(self):
+    def computeDiagnostic(self, method="PBE", basis=None):
         print("Compute FON based diagnostic of the given molecule:")
         if self.fons is None:
-           self.computeFon("PBE")
+           self.computeFon(method, basis)
         FOD = self.getFOD(self.fons, self.norb, self.nele, self.restricted)
         I_D,I_ND = self.getMattito(self.fons, self.norb, self.restricted)
         S = self.getEntanglement(self.fons, self.norb, self.restricted)
