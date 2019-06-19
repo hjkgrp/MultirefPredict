@@ -71,7 +71,7 @@ class FonBased(Diagnostic):
                 driver="energy",
                 model={"method": tc_method, "basis": basis_set},
                 keywords={"gpus": "1",
-                          "maxit": "1500", 
+                          "maxit": "500", 
                           "scf": "diis+a", 
                           "levelshift":"yes",
                           "levelshiftvalb":"0.25",
