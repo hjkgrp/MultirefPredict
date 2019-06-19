@@ -69,6 +69,6 @@ def element_to_core_AO(symbol, basis_set):
             else:
                 core_AO = 27
         else:
-            atomic_num = 0
+            core_AO = 0
 
     return core_AO

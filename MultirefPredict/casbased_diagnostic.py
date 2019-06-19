@@ -17,7 +17,7 @@ def obtainC0fromstr(outfile):
         if "*   1" in line:
             try:
                 C0 = float(line.split()[2])
-            except:
+            except ValueError:
                 C0 = np.nan
     return C0
 

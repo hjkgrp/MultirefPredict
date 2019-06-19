@@ -41,18 +41,14 @@ class FonBased(Diagnostic):
     """
     Compute the Fractional Occupation SCF
     """
-    def FonTask(self, mol, program, method, temperature=None, basis=None):
+    def FonTask(self, mol, program, method, basis=None):
         task = None
         #Default parameters
         basis_set = "lacvps_ecp"
         if basis is not None:
             basis_set = basis
 
-        temp = 0.01583405237
-        if temperature is not None:
-            temp = temperature
-        else:
-            temp = self.setTemperature(method)
+        temp = self.setTemperature(method)
 
         temp_K = temp/3.16681e-6
 
@@ -74,7 +70,7 @@ class FonBased(Diagnostic):
                           "maxit": "500", 
                           "scf": "diis+a", 
                           "levelshift":"yes",
-                          "levelshiftvalb":"0.25",
+                          "levelshiftvala":"0.25",
                           "levelshiftvalb":"0.25",
                           "convthre": "1e-6",  
                           "precision": "double",
@@ -123,7 +119,7 @@ class FonBased(Diagnostic):
     """
     def computeFon(self, method, basis=None):
         # Caculate energy for the whole molecule
-        molecule_task = self.FonTask(self.molecule, self.program, method,None,basis)
+        molecule_task = self.FonTask(self.molecule, self.program, method,basis)
 
         molecule_result = qcengine.compute(molecule_task, self.program)
         if self.record:
