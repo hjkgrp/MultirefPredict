@@ -6,6 +6,7 @@ Classes that calculate the energy based multireference diagnostics
 import qcengine
 import qcelemental
 import math
+import sys
 
 from MultirefPredict.io_tools import qcres_to_json, write_diagnostics_to_json
 from MultirefPredict.diagnostic import Diagnostic
@@ -57,6 +58,7 @@ class FonBased(Diagnostic):
 
         print("FON temperature: {0:10.5f} (KT in atomic unit) ".format(temp))
         print("                 {0:10.0f} (Kelvin) ".format(temp_K))
+        sys.stdout.flush()
         #TODO add HFX dependent temperature determination
         # Set the core orbitals as frozen and allow FON for all others
         self.norb, self.ncore = molecule_to_num_AO(mol, basis_set)
