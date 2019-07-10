@@ -64,26 +64,35 @@ class FonBased(Diagnostic):
         self.norb, self.ncore = molecule_to_num_AO(mol, basis_set)
         if program == "terachem":
             tc_method = method if mol.molecular_multiplicity == 1 else "u" + method
+            extra_keywords={"gpus": "1",
+                "maxit": "500", 
+                "scf": "diis+a", 
+                "levelshift":"yes",
+                "levelshiftvala":"0.25",
+                "levelshiftvalb":"0.25",
+                "convthre": "1e-6",  
+                "precision": "double",
+                "units": "bohr",
+                "fon": "yes",
+                "fon_method": "fermi",
+                "fon_temperature": temp,
+                "fon_print": "1",
+                "method": tc_method,
+                "closed": self.ncore,
+                "active": self.norb-self.ncore}
+            if self.wfn != None:
+                if self.wfn[0]!="" and self.wfn[1]!="":
+                    extra_keywords["guess"] = self.wfn[0] + " " + self.wfn[1]
+                elif self.wfn[2]!="":
+                    extra_keywords["guess"] = self.wfn[2]
+                else:
+                    print("Warning: initial guess for SCF is not provided with"\
+                          + "the correct format and will be ignored")
             task = qcelemental.models.ResultInput(
                 molecule=mol,
                 driver="energy",
                 model={"method": tc_method, "basis": basis_set},
-                keywords={"gpus": "1",
-                          "maxit": "500", 
-                          "scf": "diis+a", 
-                          "levelshift":"yes",
-                          "levelshiftvala":"0.25",
-                          "levelshiftvalb":"0.25",
-                          "convthre": "1e-6",  
-                          "precision": "double",
-                          "units": "bohr",
-                          "fon": "yes",
-                          "fon_method": "fermi",
-                          "fon_temperature": temp,
-                          "fon_print": "1",
-                          "method": tc_method,
-                          "closed": self.ncore,
-                          "active": self.norb-self.ncore}
+                keywords= extra_keywords
             )
         else:
             raise ValueError("FON calculation is not implemented for the requested program yet.")
