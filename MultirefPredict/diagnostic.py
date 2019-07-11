@@ -22,6 +22,7 @@ class Diagnostic(ABC):
         self.record = kwargs["record"] if "record" in kwargs.keys() else False
         self.program = kwargs["program"] if "program" in kwargs.keys() else "psi4"
         self.wfn = kwargs["wfn"] if "wfn" in kwargs.keys() else None
+        self.extras = kwargs["extras"] if "extras" in kwargs.keys() else None
         self.initialization_check(**kwargs)
 
     def initialization_check(self, **kwargs):
@@ -35,6 +36,10 @@ class Diagnostic(ABC):
             if not isinstance(self.wfn, list) or len(self.wfn) != 3:
                 raise ValueError("Wavefunction initial guess: keyword argument should be a list"\
                                  + "composing of the ca0_path, cb0_path, and c0_path")
+        if self.extras is not None:
+            if not isinstance(self.extras, list):
+                raise ValueError("Input keyword \"extras\" should be a list of "\
+                                 + "extra files to be collected from calculation")
         if "xyzfile" in kwargs.keys():
             self.xyzfile = kwargs["xyzfile"]
             self.charge = kwargs["charge"] if "charge" in kwargs.keys() else 0

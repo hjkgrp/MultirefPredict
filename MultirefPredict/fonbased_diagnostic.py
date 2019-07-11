@@ -64,7 +64,7 @@ class FonBased(Diagnostic):
         self.norb, self.ncore = molecule_to_num_AO(mol, basis_set)
         if program == "terachem":
             tc_method = method if mol.molecular_multiplicity == 1 else "u" + method
-            extra_keywords={"gpus": "1",
+            additional_keywords={"gpus": "1",
                 "maxit": "500", 
                 "scf": "diis+a", 
                 "levelshift":"yes",
@@ -82,17 +82,22 @@ class FonBased(Diagnostic):
                 "active": self.norb-self.ncore}
             if self.wfn != None:
                 if self.wfn[0]!="" and self.wfn[1]!="":
-                    extra_keywords["guess"] = self.wfn[0] + " " + self.wfn[1]
+                    additional_keywords["guess"] = self.wfn[0] + " " + self.wfn[1]
                 elif self.wfn[2]!="":
-                    extra_keywords["guess"] = self.wfn[2]
+                    additional_keywords["guess"] = self.wfn[2]
                 else:
                     print("Warning: initial guess for SCF is not provided with"\
                           + "the correct format and will be ignored")
+            extra_files = {}
+            if isinstance(self.extras,list):
+                for extra in self.extras:
+                    extra_files[extra] = ""
             task = qcelemental.models.ResultInput(
                 molecule=mol,
                 driver="energy",
                 model={"method": tc_method, "basis": basis_set},
-                keywords= extra_keywords
+                keywords= additional_keywords,
+                extras=extra_files
             )
         else:
             raise ValueError("FON calculation is not implemented for the requested program yet.")
