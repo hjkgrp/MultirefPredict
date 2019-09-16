@@ -24,6 +24,8 @@ class Diagnostic(ABC):
         self.wfn = kwargs["wfn"] if "wfn" in kwargs.keys() else None
         self.extras = kwargs["extras"] if "extras" in kwargs.keys() else None
         self.initialization_check(**kwargs)
+        self.levelshiftvala = kwargs["levelshiftvala"] if "levelshiftvala" in kwargs.keys() else 0.25
+        self.levelshiftvalb = kwargs["levelshiftvalb"] if "levelshiftvalb" in kwargs.keys() else 0.25
 
     def initialization_check(self, **kwargs):
         ensure_dir(self.rundir)
