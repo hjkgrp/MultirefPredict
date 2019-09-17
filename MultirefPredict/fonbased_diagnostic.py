@@ -22,6 +22,11 @@ class FonBased(Diagnostic):
         self.norb = 0
         self.ncore = 0
         self.nele = 0
+        self.Hartree2K = 3.16681e-6
+        if "temp_K" in kwargs.keys():
+            self.temp_K = kwargs["temp_K"]
+        else:
+            self.temp_K = False
 
     def setTemperature(self, method):
         if not isinstance(method, str):
@@ -49,15 +54,18 @@ class FonBased(Diagnostic):
         if basis is not None:
             basis_set = basis
 
-        temp = self.setTemperature(method)
-
-        temp_K = temp/3.16681e-6
+        if not self.temp_K:
+            temp = self.setTemperature(method)
+            self.temp = temp
+            self.temp_K = temp/self.Hartree2K
+        else:
+            self.temp = self.temp_K*self.Hartree2K
 
         print("")
         print("Fractional Occupation Number SCF with " + method + "/"+basis_set)
 
-        print("FON temperature: {0:10.5f} (KT in atomic unit) ".format(temp))
-        print("                 {0:10.0f} (Kelvin) ".format(temp_K))
+        print("FON temperature: {0:10.5f} (KT in atomic unit) ".format(self.temp))
+        print("                 {0:10.0f} (Kelvin) ".format(self.temp_K))
         sys.stdout.flush()
         #TODO add HFX dependent temperature determination
         # Set the core orbitals as frozen and allow FON for all others
@@ -75,7 +83,7 @@ class FonBased(Diagnostic):
                 "units": "bohr",
                 "fon": "yes",
                 "fon_method": "fermi",
-                "fon_temperature": temp,
+                "fon_temperature": self.temp,
                 "fon_print": "1",
                 "method": tc_method,
                 "closed": self.ncore,
