@@ -140,7 +140,7 @@ def test_fon_computeFon_unrestricted(fon_trityl_radical):
     assert molecule_task is not None
     result = fon_trityl_radical.computeFon("PBE")
     assert fon_trityl_radical.fons is not None
-    with pytest.raises(ValueError):
+    with pytest.raises(RuntimeError):
         failed_result = fon_trityl_radical.computeFon("TPSS")
 
 @using_terachem
