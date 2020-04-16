@@ -13,10 +13,11 @@ Automated workflow to predict multireference character of molecules in quantum c
 Copyright (c) 2019, Kulik group at MIT
 
 
+#### Online documentation and tutorial
+http://multirefpredict.readthedocs.io
+
 #### Acknowledgements
  
 Project based on the 
 [Computational Molecular Science Python Cookiecutter](https://github.com/molssi/cookiecutter-cms) version 1.0.
 
-#### Online documentation and tutorial
-http://multirefpredict.readthedocs.io
