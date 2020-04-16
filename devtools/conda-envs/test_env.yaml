@@ -19,7 +19,7 @@ dependencies:
   - pyyaml
   - py-cpuinfo
   - psutil
-  - pydantic >=0.20.0
+  - pydantic=0.23
   - openbabel
 
     # Pip-only installs
