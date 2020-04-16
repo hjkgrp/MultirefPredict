@@ -28,4 +28,4 @@ dependencies:
     - basis_set_exchange
     - git+https://github.com/leeping/geomeTRIC#egg=geometric
     - git+https://github.com/ffangliu/QCEngine.git@terachemmol#egg=qcengine
-    - git+https://github.com/MolSSI/QCElemental.git@master#egg=qcelemental
+    - git+https://github.com/MolSSI/QCElemental.git@v0.4.2#egg=qcelemental
