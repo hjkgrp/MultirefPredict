@@ -17,3 +17,6 @@ Copyright (c) 2019, Kulik group at MIT
  
 Project based on the 
 [Computational Molecular Science Python Cookiecutter](https://github.com/molssi/cookiecutter-cms) version 1.0.
+
+#### Online documentation and tutorial
+http://multirefpredict.readthedocs.io
