@@ -1,13 +1,22 @@
 import os
 import subprocess
+import numpy as np
 import time
 import json
 
 
 def qcres_to_json(res, filename):
     outdict = res.dict()
-    if "molecule" in outdict.keys():
-        outdict['molecule']['geometry'] = outdict['molecule']['geometry'].flatten().tolist()
+    for key in outdict.keys():
+        if(isinstance(outdict[key],np.ndarray)):
+           outdict[key] = outdict[key].flatten().tolist()
+           #print(key, isinstance(outdict[key],  np.ndarray))
+        if(isinstance(outdict[key],dict)):
+           for k in outdict[key].keys():
+             if(isinstance(outdict[key][k],np.ndarray)):
+                #print(key, k, isinstance(outdict[key][k],  np.ndarray))
+                outdict[key][k] = outdict[key][k].flatten().tolist()
+                #print(key, k, isinstance(outdict[key][k],  np.ndarray))
     f = open(filename, 'w')
     json.dump(outdict, f)
     f.close()

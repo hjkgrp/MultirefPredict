@@ -25,7 +25,7 @@ dependencies:
     # Pip-only installs
   - pip:
     - codecov
+    - qcengine
     - basis_set_exchange
     - git+https://github.com/leeping/geomeTRIC#egg=geometric
-    - git+https://github.com/ffangliu/QCEngine.git@terachemmol#egg=qcengine
     - git+https://github.com/MolSSI/QCElemental.git@v0.4.2#egg=qcelemental
