@@ -17,6 +17,12 @@ def qcres_to_json(res, filename):
                 #print(key, k, isinstance(outdict[key][k],  np.ndarray))
                 outdict[key][k] = outdict[key][k].flatten().tolist()
                 #print(key, k, isinstance(outdict[key][k],  np.ndarray))
+             elif(isinstance(outdict[key][k],dict)):
+                for k2 in outdict[key][k].keys():
+                   if(isinstance(outdict[key][k][k2],np.ndarray)):
+                       print(key, k, k2, isinstance(outdict[key][k][k2],  np.ndarray))
+                       outdict[key][k][k2] = outdict[key][k][k2].flatten().tolist()
+
     f = open(filename, 'w')
     json.dump(outdict, f)
     f.close()
